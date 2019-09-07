@@ -97,7 +97,7 @@
       </b-row>
       <b-row class="pt-2 pb-4 px-5 mb-4 mt-4" v-else-if="showResults">
         <b-col>
-          <p class="result-text">By cycling to work <strong>{{ rideCount | countToWords }} {{ rideFreq | freqToWords }}</strong> you reduce your carbon footprint by <strong>{{ carbonSavingMonthly | carbonSavingToStr }} of CO2</strong> and save <strong>${{ fuelSavingMonthly }}</strong> on gas every month!</p>
+          <p class="result-text">By cycling to work <strong>{{ rideCount | countToWords }} {{ rideFreq | freqToWords }}</strong> you reduce your carbon footprint by <strong>{{ carbonSavingMonthly | carbonSavingToStr }} of CO<sub>2</sub></strong> and save <strong>${{ fuelSavingMonthly }}</strong> on gas every month!</p>
 
           <social-sharing url="https://biketoworkcalculator.com"
             :title="socialShareStr"
@@ -107,7 +107,7 @@
               <img src="./assets/Twitter_Social_Icon_Rounded_Square_Color.png" alt="tweet this">Tweet This
             </network>
           </social-sharing>
-          
+          <a @click.prevent="showForm" class="float-right">re-calculate ↩️</a>
         </b-col>
       </b-row>
       
@@ -297,6 +297,10 @@ h1 {
 .result-text {
   font-size: 1.5em;
   line-height: 1.25em;
+}
+
+a {
+  cursor: pointer;
 }
 
 span[data-link="#share-twitter"] {
