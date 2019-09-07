@@ -1,7 +1,7 @@
 <template>
   <div id="app" v-bind:style="{ backgroundImage: backgroundImage }">
     <b-container id="form-container" class="my-5">
-      <b-row class="pt-4 pb-2 px-5 mb-4 border-bottom">
+      <b-row class="pt-4 pb-2 px-4 border-bottom">
         <b-col>
           <h1>How Much Do You Save By Biking To Work?</h1>
           <p>Ever wonder how much <strong>CO2</strong> you our keeping out of the atmosphere by biking to work? Or how much <strong>cash</strong> you save by not buying gas?</p>
@@ -23,7 +23,7 @@
                 id="distance" 
                 v-model="distance"
                 :invalid-feedback="invalidDistance"
-                placeholder="10.5"
+                placeholder="one-way distance"
                 tabindex="1"
                 required
               ></b-input>
@@ -42,7 +42,7 @@
                 step="0.1"
                 id="economy"
                 v-model="economy"
-                placeholder="9.0"
+                placeholder="your best guess"
                 tabindex="2"
                 required
               ></b-input>
@@ -61,7 +61,7 @@
               step="0.001" 
               id="fuel-price" 
               v-model="fuelPrice" 
-              placeholder="1.255"
+              placeholder="check the pump"
               tabindex="3"
               required
               ></b-form-input>
@@ -80,7 +80,7 @@
               type="number"
               id="ride-count" 
               v-model="rideCount" 
-              placeholder="2"
+              placeholder="round trips"
               tabindex="4"
               required
               autocomplete="off"
@@ -97,7 +97,7 @@
       </b-row>
       <b-row class="pt-2 pb-4 px-5 mb-4" v-else-if="showResults">
         <b-col>
-          <p>By cycling to work <strong>{{ rideCount | countToWords }} {{ rideFreq | freqToWords }}</strong> you will save <strong>{{ carbonSavingMonthly | carbonSavingToStr }} of CO2</strong> and <strong>${{ fuelSavingMonthly }}</strong> of gasoline every month!</p>
+          <p class="result-text">By cycling to work <strong>{{ rideCount | countToWords }} {{ rideFreq | freqToWords }}</strong> you reduce your carbon footprint by <strong>{{ carbonSavingMonthly | carbonSavingToStr }} of CO2</strong> and save <strong>${{ fuelSavingMonthly }}</strong> on gas every month!</p>
 
           <social-sharing url="https://biketoworkcalculator.com"
             :title="socialShareStr"
@@ -239,9 +239,9 @@ export default {
       return 'By cycling to work ' + this.$options.filters.countToWords(this.rideCount) + 
               ' ' + 
               this.$options.filters.freqToWords(this.rideFreq) + 
-              ' I will save ' +
+              ' I reduce my carbon footprint by ' +
               this.$options.filters.carbonSavingToStr(this.carbonSavingMonthly) +
-              ' of CO2 and $' +  this.fuelSavingMonthly + ' of gas every month!!';
+              ' of CO2 and save $' +  this.fuelSavingMonthly + ' on gas every month!!';
     }
   },
   mounted() {
@@ -294,6 +294,11 @@ h1 {
   color: #3d9b35;
 }
 
+.result-text {
+  font-size: 1.5em;
+  line-height: 1.25em;
+}
+
 span[data-link="#share-twitter"] {
   color: #00aced;
   cursor: pointer;
@@ -316,6 +321,8 @@ input[type=number] {
 
 label {
   color: #666;
+  margin-bottom: -0.25em;
+  margin-top: 2em;
 }
 
 .form-control,
@@ -336,11 +343,14 @@ label {
 }
 
 .form-control {
+  border-bottom: 1px solid;
+  border-radius: 0;
   padding: 0;
 }
 
 .form-control::placeholder {
   color: #aaa;
+  font-size: 0.75em;
   font-weight: normal;
 }
 
@@ -348,5 +358,7 @@ label {
   border-color: #3d9b35;
   background-color: #3d9b35;
   font-size: 2em;
+  margin-bottom: 0.5em;
+  margin-top: 1em;
 }
 </style>
