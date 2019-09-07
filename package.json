@@ -10,7 +10,8 @@
   "dependencies": {
     "bootstrap-vue": "^2.0.0-rc.19",
     "core-js": "^2.6.5",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vue-social-sharing": "^2.4.6"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.4.4",
@@ -27,6 +28,7 @@
     "portal-vue": "^2.1.4",
     "sass": "^1.17.4",
     "sass-loader": "^7.1.0",
+    "vee-validate": "^3.0.4",
     "vue-cli-plugin-bootstrap-vue": "^0.4.0",
     "vue-cli-plugin-vuetify": "^0.6.3",
     "vue-template-compiler": "^2.6.10",

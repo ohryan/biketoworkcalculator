@@ -22,7 +22,34 @@ export const Calc = {
                 return distance * this.mpk;
         }
     },
-    carbon(consumption) {
-        return consumption * this.co2L;
+    // return fuel consumption in 
+    fuelConsumptionInLitres(distance, distanceUnit, economy, economyUnit) {
+        if (distanceUnit === 'km' && economyUnit == 'l100') {
+            return (distance / 100) * economy;
+        } else if (distanceUnit === 'km' && economyUnit === 'mpg') {
+            return (distance * this.mpk) * economy / this.gpL;
+        } else if (distanceUnit === 'mi' && economyUnit === 'l100') {
+            return (distance * this.mpk / 100) * economy;
+        } else if (distanceUnit === 'mi' && economyUnit === 'mpg') {
+            return distance * economy / this.gpL;
+        }
+    },
+    fuelCostFromLitres(fuelCost, fuelConsumptionInLitres, economyUnit) {
+        if (economyUnit === 'gal') {
+            return fuelCost / this.gpL * fuelConsumptionInLitres;
+        }
+        
+        return fuelCost * fuelConsumptionInLitres;
+    },
+    // amount of carbon produced in grams
+    carbonProduction(fuelConsumptionInLitres) {
+        return fuelConsumptionInLitres * this.co2L;
+    },
+    monthlyTotal(value,frequency, period) {
+        if (period === 'wk') {
+            return value * frequency * 4;
+        } else {
+            return value * frequency;
+        }
     }
 }

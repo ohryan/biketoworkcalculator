@@ -1,70 +1,352 @@
 <template>
-  <div id="app">
-    <form @submit.prevent="calc" v-form>
-      <label for="distance">How far do you drive to work?</label>
-      <input type="number" step="0.1" id="distance" v-model="distance" v-input>
-      <select name="distance-unit" id="" v-model="distanceUnit">
-        <option value="km">km</option>
-        <option value="mi">mi</option>
-      </select>
+  <div id="app" v-bind:style="{ backgroundImage: backgroundImage }">
+    <b-container id="form-container" class="my-5">
+      <b-row class="pt-4 pb-2 px-5 mb-4 border-bottom">
+        <b-col>
+          <h1>How Much Do You Save By Biking To Work?</h1>
+          <p>Ever wonder how much <strong>CO2</strong> you our keeping out of the atmosphere by biking to work? Or how much <strong>cash</strong> you save by not buying gas?</p>
+        </b-col>
+      </b-row>
+      <b-row v-if="!showResults">
+        <b-form 
+          class="pb-4 px-5"
+          @submit.prevent="calc"
+        >
+          <b-form-group
+            label="Distance to Work"
+            label-for="distance"
+          >
+            <b-input-group>
+              <b-input 
+                type="number" 
+                step="0.1" 
+                id="distance" 
+                v-model="distance"
+                :invalid-feedback="invalidDistance"
+                placeholder="10.5"
+                tabindex="1"
+                required
+              ></b-input>
+              <template v-slot:append>
+                <b-form-select v-model="distanceUnit" :options="distanceUnitOpts" @change="switchUnits"></b-form-select>
+              </template>
+            </b-input-group>
+          </b-form-group>
+          <b-form-group
+            label="Fuel Economy"
+            label-for="economy"
+          >
+            <b-input-group>
+              <b-input
+                type="number"
+                step="0.1"
+                id="economy"
+                v-model="economy"
+                placeholder="9.0"
+                tabindex="2"
+                required
+              ></b-input>
+              <template v-slot:append>
+                <b-form-select v-model="economyUnit" :options="economyUnitOpts"></b-form-select>
+              </template>
+            </b-input-group>
+          </b-form-group>
+          <b-form-group
+            label="Cost of Gas"
+            label-for="fuel-price"
+          >
+            <b-input-group prepend="$">
+              <b-form-input
+              type="number" 
+              step="0.001" 
+              id="fuel-price" 
+              v-model="fuelPrice" 
+              placeholder="1.255"
+              tabindex="3"
+              required
+              ></b-form-input>
+              <template v-slot:append>
+                <b-form-select v-model="fuelPriceUnit" :options="fuelPriceUnitOpts" />
+              </template>
+            </b-input-group>
+          </b-form-group>
 
-      <label for="economy">How gas does your car use?</label>
-      <input type="number" step="0.1" id="economy" v-model="economy">
-      <select name="economy-unit" id="" v-model="economyUnit">
-        <option value="l100">L/100km</option>
-        <option value="mpg">mpg</option>
-        <option value="lpk">L/km</option>
-        <option value="mpgimp">mpg (imperial)</option>
-      </select>
+          <b-form-group
+            label="Number of Rides"
+            label-for="ride-count"
+          >
+            <b-input-group>
+              <b-form-input
+              type="number"
+              id="ride-count" 
+              v-model="rideCount" 
+              placeholder="2"
+              tabindex="4"
+              required
+              autocomplete="off"
+              ></b-form-input>
+              <template v-slot:append>
+                <b-form-select v-model="rideFreq" :options="rideFreqOpts" />
+              </template>
+            </b-input-group>
+          </b-form-group>
+          
+        
+          <b-button type="submit" block>🚴 calculate 🚴</b-button>
+        </b-form>
+      </b-row>
+      <b-row class="pt-2 pb-4 px-5 mb-4" v-else-if="showResults">
+        <b-col>
+          <p>By cycling to work <strong>{{ rideCount | countToWords }} {{ rideFreq | freqToWords }}</strong> you will save <strong>{{ carbonSavingMonthly | carbonSavingToStr }} of CO2</strong> and <strong>${{ fuelSavingMonthly }}</strong> of gasoline every month!</p>
 
-      <label for="fuel-price">How much do you pay for gas?</label>
-      <input type="number" step="0.001" id="fuel-price" v-model="fuelPrice">
-
-      🏭 <input type="number" step="0.01" v-model="carbonSaving">
-      🏦 <input type="number" step="0.01" v-model="fuelSaving">
-      <input type="submit" value="calculate it">
-    </form>
+          <social-sharing url="https://biketoworkcalculator.com"
+            :title="socialShareStr"
+            inline-template
+          >
+            <network network="twitter">
+              <img src="./assets/Twitter_Social_Icon_Rounded_Square_Color.png" alt="tweet this">Tweet This
+            </network>
+          </social-sharing>
+          
+        </b-col>
+      </b-row>
+      
+    </b-container>
   </div>
 </template>
 
 <script>
 import { Calc } from './modules/calculator';
+
 export default {
   name: 'app',
   data() {
     return {
+      backgroundImage: null,
       distance: null,
       distanceUnit: 'km',
+      distanceUnitOpts: [
+        {value: 'km', text: 'km'},
+        {value: 'mi', text: 'mi'},
+      ],
       economy: null,
       economyUnit: 'l100',
-      carbonConsumption: null,
+      economyUnitOpts: [
+        {value: 'l100', text: 'L/100km'},
+        {value: 'mpg', text: 'mpg'},
+        // {value: 'mpgimp', text: 'mpg (imp)'},
+        // {value: 'lpk', text: 'L/km'},
+      ],
+      carbonProduction: null,
       carbonSaving: 0,
+      carbonSavingMonthly: 0,
+      fuelPriceUnit: 'l',
+      fuelPriceUnitOpts: [
+        {value: 'l', text: '/L'},
+        {value: 'gal', text: '/gal'},
+      ],
       fuelConsumption: 0,
       fuelPrice: null,
       fuelSaving: 0,
+      fuelSavingMonthly: 0,
+      rideCount: null,
+      rideFreq: 'wk',
+      rideFreqOpts: [
+        {value: 'wk', text: '/week'},
+        {value: 'mo', text: '/month'},
+      ],      
+      showResults: false,
     }
   },
   components: {
 
+  },
+  filters: {
+    countToWords(number) {
+      if (number === '1') {
+        return 'once a';
+      } else if (number === '2') {
+        return 'twice per';
+      } else if (number === '3') {
+        return 'thrice per';
+      } else {
+        return `${number} times per`; 
+      }
+    },
+    freqToWords(freq) {
+      if (freq === 'wk') {
+        return 'week';
+      } else {
+        return 'month';
+      }
+    },
+    carbonSavingToStr(saving) {
+      if (saving < 1000) {
+        return `${saving} grams`;
+      } else {
+        return `${saving} kilograms`;
+      }
+    }
   },
   methods: {
     toFixed(value, decimals = 2) {
       return parseFloat(value).toFixed(decimals);
     },
     calc() {
-      let economy = Calc.ecoLKm(this.economy, this.economyUnit); 
-      let distance = Calc.toKm(this.distance, this.distanceUnit);
-      this.fuelConsumption = this.toFixed(economy * distance);
-      this.carbonConsumption = Calc.carbon(this.fuelConsumption);
-      this.carbonSaving = this.toFixed(this.carbonConsumption * 2);
+      this.fuelConsumption = Calc.fuelConsumptionInLitres(this.distance, this.distanceUnit, this.economy, this.economyUnit);
+      this.carbonProduction = Calc.carbonProduction(this.fuelConsumption);
+      this.carbonSaving = this.toFixed(this.carbonProduction * 2);
       this.fuelSaving = this.toFixed(this.fuelPrice * this.fuelConsumption * 2);
+      this.carbonSavingMonthly = this.toFixed(Calc.monthlyTotal(this.carbonSaving, this.rideCount, this.rideFreq ));
+      this.fuelSavingMonthly = this.toFixed(Calc.monthlyTotal(this.fuelSaving, this.rideCount, this.rideFreq ));
+      this.showResults = true;
+    },
+    showForm() {
+      this.showResults = false;
+    },
+    switchUnits() {
+      if(this.distanceUnit === 'km') {
+        this.economyUnit = 'l100';
+        this.fuelPriceUnit = 'l';
+      } else {
+        this.economyUnit = 'mpg';
+        this.fuelPriceUnit = 'gal';
+      }
+    },
+    randomBackgroundImage() {
+      const srcs = [
+        'alain-wong-XTm3CpqhBAQ-unsplash.jpg',
+        'd-a-v-i-d-s-o-n-l-u-n-a-U6QxydYEU3Y-unsplash.jpg',
+        'david-marcu-Op5JMbkOqi0-unsplash.jpg',
+        'george-kedenburg-iii-zpZODBGbWcg-unsplash.jpg',
+        'gordon-williams-sBkK2VWV8Kw-unsplash.jpg',
+        'robin-spielmann-tLLmz54M8I8-unsplash.jpg',
+        'roman-koester-v53RV9LL5y0-unsplash.jpg',
+        'samuel-zeller-3CNpEqQD9jU-unsplash.jpg,'
+      ];
+      
+      return 'url(./images/backgrounds/' + srcs[Math.floor(Math.random()*srcs.length)] + ')';
     }
+  },
+  computed: {
+    invalidDistance() {
+      if (!Number(this.distance)) {
+        return 'please enter a number';
+      }
+      return '';
+    },
+    socialShareStr() {
+      return 'By cycling to work ' + this.$options.filters.countToWords(this.rideCount) + 
+              ' ' + 
+              this.$options.filters.freqToWords(this.rideFreq) + 
+              ' I will save ' +
+              this.$options.filters.carbonSavingToStr(this.carbonSavingMonthly) +
+              ' of CO2 and $' +  this.fuelSavingMonthly + ' of gas every month!!';
+    }
+  },
+  mounted() {
+    this.backgroundImage = this.randomBackgroundImage();
   }
 }
 </script>
 
 <style>
-#app {
+textarea:focus, 
+textarea.form-control:focus, 
+input.form-control:focus, 
+input[type=text]:focus, 
+input[type=password]:focus, 
+input[type=email]:focus, 
+input[type=number]:focus, 
+[type=text].form-control:focus, 
+[type=password].form-control:focus, 
+[type=email].form-control:focus, 
+[type=tel].form-control:focus, 
+[contenteditable].form-control:focus {
+  box-shadow: none;
+}
 
+body {
+  font-family: 'Rubik', sans-serif;
+}
+
+#app {
+  background-color: #888;
+  background-attachment:fixed;
+  background-size: cover;
+  background-position: center bottom;
+  position: fixed;
+  overflow-x: auto;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+}
+#form-container{
+  background: #fff;
+  max-width: 600px
+}
+
+h1 {
+  color: #3d9b35;
+}
+
+span[data-link="#share-twitter"] {
+  color: #00aced;
+  cursor: pointer;
+}
+span[data-link="#share-twitter"] img {
+  margin-right: 5px;
+  width: 25px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+  -moz-appearance:textfield;
+}
+
+label {
+  color: #666;
+}
+
+.form-control,
+.custom-select,
+.input-group-text {
+  border: none;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.custom-select {
+  text-align: right;
+}
+
+.input-group-text {
+  background: none;
+  padding-left: 0;
+}
+
+.form-control {
+  padding: 0;
+}
+
+.form-control::placeholder {
+  color: #aaa;
+  font-weight: normal;
+}
+
+.btn.btn-secondary {
+  border-color: #3d9b35;
+  background-color: #3d9b35;
+  font-size: 2em;
 }
 </style>
