@@ -95,7 +95,7 @@
           <b-button type="submit" block>🚴 calculate 🚴</b-button>
         </b-form>
       </b-row>
-      <b-row class="pt-2 pb-4 px-5 mb-4" v-else-if="showResults">
+      <b-row class="pt-2 pb-4 px-5 mb-4 mt-4" v-else-if="showResults">
         <b-col>
           <p class="result-text">By cycling to work <strong>{{ rideCount | countToWords }} {{ rideFreq | freqToWords }}</strong> you reduce your carbon footprint by <strong>{{ carbonSavingMonthly | carbonSavingToStr }} of CO2</strong> and save <strong>${{ fuelSavingMonthly }}</strong> on gas every month!</p>
 
