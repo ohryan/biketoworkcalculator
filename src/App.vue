@@ -110,7 +110,19 @@
           <a @click.prevent="showForm" class="float-right">re-calculate ↩️</a>
         </b-col>
       </b-row>
-      
+      <b-row class="px-4 pb-4">
+        <b-col class="text-right">
+          <small><a @click.prevent="toggleAbout">About</a></small>
+        </b-col>
+      </b-row>
+      <b-row v-if="showAbout" class="px-4 pb-4">
+        <b-col>
+          <h4>Methodology</h4>
+          <p>There are many factors that could to considered when analyzing the carbon footprint of our actions. This tool is meant as a quick and simple way to get a general idea of the impact of cycling to work. It purposely ignores many nuanced factors that should be taking in to account when trying to devise a scientifically accurate carbon footprint, in favour a simplified form. The calculation is based on 2.29g/L of 0% ethanol gasoline. If you regularly fill up a car with 10% ethanol, you'll be saving a little less. If you drive a diesel, you'll be saving more.</p>
+          <h4>About Me</h4>
+          <p>I am a web developer in Winnipeg, Canada. You can find me on twitter <a href="https://twitter.com/ohryan" target="_blank">@ohryan</a> or my blog <a href="https://ohryan.ca" target="_blank">ohryan.ca</a>.</p>
+        </b-col>
+      </b-row>
     </b-container>
   </div>
 </template>
@@ -145,7 +157,7 @@ export default {
         {value: 'l', text: '/L'},
         {value: 'gal', text: '/gal'},
       ],
-      fuelConsumption: 0,
+      fuelConsumptionInLitres: 0,
       fuelPrice: null,
       fuelSaving: 0,
       fuelSavingMonthly: 0,
@@ -156,6 +168,7 @@ export default {
         {value: 'mo', text: '/month'},
       ],      
       showResults: false,
+      showAbout: false,
     }
   },
   components: {
@@ -193,13 +206,17 @@ export default {
       return parseFloat(value).toFixed(decimals);
     },
     calc() {
-      this.fuelConsumption = Calc.fuelConsumptionInLitres(this.distance, this.distanceUnit, this.economy, this.economyUnit);
-      this.carbonProduction = Calc.carbonProduction(this.fuelConsumption);
+      this.fuelConsumptionInLitres = Calc.fuelConsumptionInLitres(this.distance, this.distanceUnit, this.economy, this.economyUnit);
+      this.carbonProduction = Calc.carbonProduction(this.fuelConsumptionInLitres);
+      // total carbon savings
       this.carbonSaving = this.toFixed(this.carbonProduction * 2);
-      this.fuelSaving = this.toFixed(this.fuelPrice * this.fuelConsumption * 2);
+      this.fuelSaving = this.toFixed(Calc.fuelPricePerLitre(this.fuelPrice, this.fuelPriceUnit)  * this.fuelConsumptionInLitres * 2);
       this.carbonSavingMonthly = this.toFixed(Calc.monthlyTotal(this.carbonSaving, this.rideCount, this.rideFreq ));
       this.fuelSavingMonthly = this.toFixed(Calc.monthlyTotal(this.fuelSaving, this.rideCount, this.rideFreq ));
       this.showResults = true;
+    },
+    toggleAbout(){
+      this.showAbout = !this.showAbout;
     },
     showForm() {
       this.showResults = false;
