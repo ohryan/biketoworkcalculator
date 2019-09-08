@@ -22,13 +22,7 @@ export const Calc = {
                 return distance * this.mpk;
         }
     },
-    fuelPricePerLitre(fuelPrice, fuelPriceUnit) {
-        if (fuelPriceUnit === 'gal') {
-            return fuelPrice * this.gpL;
-        }
 
-        return fuelPrice;
-    },
     // return fuel consumption in 
     fuelConsumptionInLitres(distance, distanceUnit, economy, economyUnit) {
         if (distanceUnit === 'km' && economyUnit == 'l100') {
@@ -41,8 +35,9 @@ export const Calc = {
             return distance / economy / this.gpL;
         }
     },
-    fuelCostFromLitres(fuelCost, fuelConsumptionInLitres, economyUnit) {
-        if (economyUnit === 'gal') {
+    fuelCostFromLitres(fuelCost, fuelConsumptionInLitres, fuelPriceUnit) {
+        console.log(fuelCost,fuelConsumptionInLitres,fuelPriceUnit);
+        if (fuelPriceUnit === 'gal') {
             return fuelCost / this.gpL * fuelConsumptionInLitres;
         }
         
