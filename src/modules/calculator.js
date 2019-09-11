@@ -11,7 +11,7 @@ export const Calc = {
             case 'l100':
                 return economy / 100;
             case 'mpg':
-                return economy / 2.825;
+                return 1 / ( economy * 1.609344/3.785 ); 
         }
     },
     toKm(distance, distanceUnit) {
@@ -25,15 +25,7 @@ export const Calc = {
 
     // return fuel consumption in 
     fuelConsumptionInLitres(distance, distanceUnit, economy, economyUnit) {
-        if (distanceUnit === 'km' && economyUnit == 'l100') {
-            return (distance / 100) * economy;
-        } else if (distanceUnit === 'km' && economyUnit === 'mpg') {
-            return (distance / this.mpk) * economy / this.gpL;
-        } else if (distanceUnit === 'mi' && economyUnit === 'l100') {
-            return (distance * this.mpk / 100) * economy;
-        } else if (distanceUnit === 'mi' && economyUnit === 'mpg') {
-            return distance / economy / this.gpL;
-        }
+        return ecoLKm * toKm;
     },
     fuelCostFromLitres(fuelCost, fuelConsumptionInLitres, fuelPriceUnit) {
         console.log(fuelCost,fuelConsumptionInLitres,fuelPriceUnit);
