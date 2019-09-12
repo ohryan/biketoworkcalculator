@@ -4,7 +4,7 @@
       <b-row class="pt-4 pb-2 px-4 border-bottom">
         <b-col>
           <h1>How Much Do You Save By Biking To Work?</h1>
-          <p>Ever wonder how much <strong>CO2</strong> you our keeping out of the atmosphere by biking to work? Or how much <strong>cash</strong> you save by not buying gas?</p>
+          <p>Ever wonder how much <strong>CO2</strong> you are keeping out of the atmosphere by biking to work? Or how much <strong>cash</strong> you save by not buying gas?</p>
         </b-col>
       </b-row>
       <b-row v-if="!showResults">
