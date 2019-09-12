@@ -2,7 +2,7 @@
 
 export const Calc = {
     gipL: 4.54609, // imperial gallons per litre
-    gpL: 3.7854,  // US gallons per litre
+    Lpgal: 3.7854,  // US gallons per litre
     mpk: 1.609344, // miles per km
     co2L: 2.29, // grams co2 produced by burning 1L gasoline. source: https://www.nrcan.gc.ca/sites/www.nrcan.gc.ca/files/oee/pdf/transportation/fuel-efficient-technologies/autosmart_factsheet_6_e.pdf
     // convert fuel economy to L/km
@@ -25,12 +25,11 @@ export const Calc = {
 
     // return fuel consumption in 
     fuelConsumptionInLitres(distance, distanceUnit, economy, economyUnit) {
-        return ecoLKm * toKm;
+        return this.ecoLKm(economy, economyUnit) * this.toKm(distance, distanceUnit);
     },
-    fuelCostFromLitres(fuelCost, fuelConsumptionInLitres, fuelPriceUnit) {
-        console.log(fuelCost,fuelConsumptionInLitres,fuelPriceUnit);
-        if (fuelPriceUnit === 'gal') {
-            return fuelCost / this.gpL * fuelConsumptionInLitres;
+    fuelCostFromLitres(fuelCost, fuelConsumptionInLitres, fuelCostUnit) { 
+        if (fuelCostUnit === 'gal') {
+            return fuelCost / this.Lpgal * fuelConsumptionInLitres;
         }
         
         return fuelCost * fuelConsumptionInLitres;

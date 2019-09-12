@@ -209,10 +209,10 @@ export default {
       this.fuelConsumptionInLitres = Calc.fuelConsumptionInLitres(this.distance, this.distanceUnit, this.economy, this.economyUnit);
       this.carbonProduction = Calc.carbonProduction(this.fuelConsumptionInLitres);
       // total carbon savings
-      this.carbonSaving = this.toFixed(this.carbonProduction * 2);
-      this.fuelSaving = this.toFixed(Calc.fuelCostFromLitres(this.fuelPrice, this.fuelConsumptionInLitres, this.fuelPriceUnit)  * this.fuelConsumptionInLitres * 2);
-      this.carbonSavingMonthly = this.toFixed(Calc.monthlyTotal(this.carbonSaving, this.rideCount, this.rideFreq ));
-      this.fuelSavingMonthly = this.toFixed(Calc.monthlyTotal(this.fuelSaving, this.rideCount, this.rideFreq ));
+      this.carbonSaving = this.carbonProduction * 2;
+      this.fuelSaving = Calc.fuelCostFromLitres(this.fuelPrice, this.fuelConsumptionInLitres, this.fuelPriceUnit)  * 2;
+      this.carbonSavingMonthly = this.toFixed(Calc.monthlyTotal(this.carbonSaving, this.rideCount, this.rideFreq));
+      this.fuelSavingMonthly = this.toFixed(Calc.monthlyTotal(this.fuelSaving, this.rideCount, this.rideFreq));
       this.showResults = true;
     },
     toggleAbout(){
