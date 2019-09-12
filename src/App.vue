@@ -112,7 +112,7 @@
       </b-row>
       <b-row class="px-4 pb-4">
         <b-col class="text-right">
-          <small><a @click.prevent="toggleAbout">About</a></small>
+          <a :class="[{open: showAbout},'aboutlink']"  @click.prevent="toggleAbout">Methodology, Etc.</a>
         </b-col>
       </b-row>
       <b-row v-if="showAbout" class="px-4 pb-4">
@@ -381,5 +381,12 @@ label {
   font-size: 2em;
   margin-bottom: 0.5em;
   margin-top: 1em;
+}
+
+.aboutlink:after {
+  content: '⇓';
+}
+.aboutlink.open:after {
+  content: '⇑';
 }
 </style>
