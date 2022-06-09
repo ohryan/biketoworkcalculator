@@ -292,7 +292,6 @@ body {
   background-attachment:fixed;
   background-size: cover;
   background-position: center bottom;
-  position: fixed;
   overflow-x: auto;
   top:0;
   bottom: 0;
